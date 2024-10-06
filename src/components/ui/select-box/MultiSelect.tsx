@@ -6,6 +6,8 @@ import {
   useTransition,
   ChangeEventHandler,
   MouseEventHandler,
+  forwardRef,
+  FocusEventHandler,
 } from "react";
 import {
   Box,
@@ -49,8 +51,10 @@ export type MultiSelectProps = {
   removeSearchBox?: boolean;
   label?: string;
   helperText?: React.ReactNode;
+  name?: string;
   placeholder?: string;
   error?: boolean;
+  onBlur?: FocusEventHandler<HTMLInputElement>;
 };
 
 type FormValues = { options: CheckboxGroupOption[] };
@@ -107,239 +111,255 @@ const mergeOptions = (
   return Array.from(optionsMap.values());
 };
 
-export const MultiSelect: FC<MultiSelectProps> = ({
-  options = [],
-  onChange,
-  inputSx = [],
-  fullWidth,
-  disabled,
-  label,
-  error,
-  helperText,
-  placeholder,
-  removeSearchBox = false,
-}) => {
-  const [_, startTransition] = useTransition();
+export const MultiSelect = forwardRef<HTMLInputElement, MultiSelectProps>(
+  (
+    {
+      options = [],
+      onChange,
+      inputSx = [],
+      fullWidth,
+      disabled,
+      label,
+      name,
+      error,
+      onBlur,
+      helperText,
+      placeholder,
+      removeSearchBox = false,
+    },
+    ref
+  ) => {
+    const [, startTransition] = useTransition();
 
-  const [baseOptions, setBaseOptions] =
-    useState<CheckboxGroupOption[]>(options);
+    const [baseOptions, setBaseOptions] =
+      useState<CheckboxGroupOption[]>(options);
 
-  const [checkedOptions, setCheckedOptions] = useState<CheckboxGroupOption[]>(
-    getCheckedOptions(options)
-  );
-  const boxRef = useRef<HTMLLabelElement | null>(null);
-  const initData = useRef(getCheckedOptions(options));
+    const [checkedOptions, setCheckedOptions] = useState<CheckboxGroupOption[]>(
+      getCheckedOptions(options)
+    );
+    const boxRef = useRef<HTMLLabelElement | null>(null);
+    const initData = useRef(getCheckedOptions(options));
 
-  const { isOpen, anchorEl, onClose, onOpen } = useMenu();
+    const { isOpen, anchorEl, onClose, onOpen } = useMenu();
 
-  const { handleSubmit, setValue, getValues, reset } = useForm<FormValues>({
-    defaultValues: { options },
-  });
+    const { handleSubmit, setValue, getValues, reset } = useForm<FormValues>({
+      defaultValues: { options },
+    });
 
-  const hasOption = checkedOptions.length > 0;
+    const hasOption = checkedOptions.length > 0;
 
-  const handleSearchInput: ChangeEventHandler<HTMLInputElement> = (e) => {
-    startTransition(() => {
-      setBaseOptions(() => {
-        const searchValue = persianToEnglishDigits(
-          e.target.value.toLowerCase().trim()
-        );
+    const handleSearchInput: ChangeEventHandler<HTMLInputElement> = (e) => {
+      startTransition(() => {
+        setBaseOptions(() => {
+          const searchValue = persianToEnglishDigits(
+            e.target.value.toLowerCase().trim()
+          );
 
-        const mergedOptions = mergeOptions(options, getValues("options"));
+          const mergedOptions = mergeOptions(options, getValues("options"));
 
-        const filteredOptions = mergedOptions.filter((checkbox) =>
-          persianToEnglishDigits(checkbox.label)
-            .toLowerCase()
-            .includes(searchValue)
-        );
-        return filteredOptions;
+          const filteredOptions = mergedOptions.filter((checkbox) =>
+            persianToEnglishDigits(checkbox.label)
+              .toLowerCase()
+              .includes(searchValue)
+          );
+          return filteredOptions;
+        });
       });
-    });
-  };
+    };
 
-  const handleCheckBoxGroupChange: ChangeEvent = (updatedOptions) => {
-    const mergedOptions = mergeOptions(options, updatedOptions);
+    const handleCheckBoxGroupChange: ChangeEvent = (updatedOptions) => {
+      const mergedOptions = mergeOptions(options, updatedOptions);
 
-    setValue("options", mergedOptions, { shouldDirty: true });
+      setValue("options", mergedOptions, { shouldDirty: true });
 
-    const checkedOptions = mergedOptions.filter((checkbox) => checkbox.checked);
+      const checkedOptions = mergedOptions.filter(
+        (checkbox) => checkbox.checked
+      );
 
-    setCheckedOptions(checkedOptions);
-    setBaseOptions(updatedOptions);
-  };
+      setCheckedOptions(checkedOptions);
+      setBaseOptions(updatedOptions);
+    };
 
-  const handleClose = ({ hasSaved }: { hasSaved?: boolean }) => {
-    reset({ options });
-    setCheckedOptions((p) => {
-      return hasSaved ? p : initData.current;
-    });
-    setBaseOptions((p) => {
-      return hasSaved ? p : options;
-    });
-    onClose();
-  };
+    const handleClose = ({ hasSaved }: { hasSaved?: boolean }) => {
+      reset({ options });
+      setCheckedOptions((p) => {
+        return hasSaved ? p : initData.current;
+      });
+      setBaseOptions((p) => {
+        return hasSaved ? p : options;
+      });
+      onClose();
+    };
 
-  const handleResetClick = () => {
-    handleClose({ hasSaved: false });
-  };
+    const handleResetClick = () => {
+      handleClose({ hasSaved: false });
+    };
 
-  const handleRemoveOptions: MouseEventHandler<HTMLButtonElement> = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
+    const handleRemoveOptions: MouseEventHandler<HTMLButtonElement> = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
 
-    const unCheckedOptions = options.map((o) => ({ ...o, checked: false }));
+      const unCheckedOptions = options.map((o) => ({ ...o, checked: false }));
 
-    setCheckedOptions([]);
-    setValue("options", unCheckedOptions, { shouldDirty: true });
-    setBaseOptions(unCheckedOptions);
+      setCheckedOptions([]);
+      setValue("options", unCheckedOptions, { shouldDirty: true });
+      setBaseOptions(unCheckedOptions);
 
-    onChange?.(unCheckedOptions, []);
-  };
+      onChange?.(unCheckedOptions, []);
+    };
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    const checkedOptions = data.options.filter((checkbox) => checkbox.checked);
-    onChange?.(data.options, checkedOptions);
-    handleClose({ hasSaved: true });
-  };
+    const onSubmit: SubmitHandler<FormValues> = (data) => {
+      const checkedOptions = data.options.filter(
+        (checkbox) => checkbox.checked
+      );
+      onChange?.(data.options, checkedOptions);
+      handleClose({ hasSaved: true });
+    };
 
-  useEffect(() => {
-    initData.current = getCheckedOptions(options);
-    setBaseOptions(options);
-  }, [options]);
+    useEffect(() => {
+      initData.current = getCheckedOptions(options);
+      setCheckedOptions(getCheckedOptions(options));
+      setBaseOptions(options);
+    }, [options]);
 
-  return (
-    <>
-      <RootInputBox
-        containerRef={(node) => {
-          if (node) {
-            boxRef.current = node;
-          }
-        }}
-        helperText={isOpen ? undefined : helperText}
-        error={error}
-        fullWidth={fullWidth}
-        label={label}
-        disabled={disabled}
-        placeholder={hasOption ? undefined : placeholder}
-        value=""
-        onChange={() => {}}
-        autoComplete="off"
-        onClick={disabled ? undefined : onOpen}
-        sx={[
-          { ...inputStyle({ isOpen, error }) },
-          ...(Array.isArray(inputSx) ? inputSx : [inputSx]),
-        ]}
-        slotProps={{
-          input: {
-            tabIndex: 0,
-            sx: {
-              borderRadius: 2,
-              px: 1,
-              height: 48,
+    return (
+      <>
+        <RootInputBox
+          containerRef={(node) => {
+            if (node) {
+              boxRef.current = node;
+            }
+          }}
+          inputRef={ref}
+          helperText={isOpen ? undefined : helperText}
+          error={error}
+          fullWidth={fullWidth}
+          label={label}
+          disabled={disabled}
+          placeholder={hasOption ? undefined : placeholder}
+          value=""
+          name={name}
+          onChange={() => {}}
+          onBlur={onBlur}
+          autoComplete="off"
+          onClick={disabled ? undefined : onOpen}
+          sx={[
+            { ...inputStyle({ isOpen, error }) },
+            ...(Array.isArray(inputSx) ? inputSx : [inputSx]),
+          ]}
+          slotProps={{
+            input: {
+              tabIndex: 0,
+              sx: {
+                borderRadius: 2,
+                px: 1,
+                height: 48,
+              },
+              endAdornment: (
+                <>
+                  {hasOption ? (
+                    <ChipBox
+                      colorVariant={isOpen ? "primary" : "grey"}
+                      sx={{ position: "absolute", left: "1rem" }}
+                    >
+                      {checkedOptions.length} مورد
+                    </ChipBox>
+                  ) : null}
+                  {hasOption ? (
+                    <IconButton disableRipple onClick={handleRemoveOptions}>
+                      <PassBoldIcon />
+                    </IconButton>
+                  ) : (
+                    <IconButton disableRipple className="prime">
+                      <ArrowDownBoldIcon />
+                    </IconButton>
+                  )}
+                </>
+              ),
             },
-            endAdornment: (
-              <>
-                {hasOption ? (
-                  <ChipBox
-                    colorVariant={isOpen ? "primary" : "grey"}
-                    sx={{ position: "absolute", left: "1rem" }}
-                  >
-                    {checkedOptions.length} مورد
-                  </ChipBox>
-                ) : null}
-                {hasOption ? (
-                  <IconButton disableRipple onClick={handleRemoveOptions}>
-                    <PassBoldIcon />
-                  </IconButton>
-                ) : (
-                  <IconButton disableRipple className="prime">
-                    <ArrowDownBoldIcon />
-                  </IconButton>
-                )}
-              </>
-            ),
-          },
-        }}
-      />
-      <Popover
-        open={isOpen}
-        anchorEl={anchorEl}
-        onClose={() => handleClose({ hasSaved: false })}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        slotProps={{
-          paper: {
-            sx: {
-              border: 1,
-              borderRadius: "0 0 8px 8px",
-              boxShadow: "0 -2px 4px 0 #7070700F, 0 4px 8px 0 #7070701F",
-              width: boxRef.current?.getBoundingClientRect().width,
-              borderColor: "grey.A200",
+          }}
+        />
+        <Popover
+          open={isOpen}
+          anchorEl={anchorEl}
+          onClose={() => handleClose({ hasSaved: false })}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          slotProps={{
+            paper: {
+              sx: {
+                border: 1,
+                borderRadius: "0 0 8px 8px",
+                boxShadow: "0 -2px 4px 0 #7070700F, 0 4px 8px 0 #7070701F",
+                width: boxRef.current?.getBoundingClientRect().width,
+                borderColor: "grey.A200",
+              },
             },
-          },
-        }}
-      >
-        <Stack
-          sx={{ width: "inherit" }}
-          component="form"
-          noValidate
-          onSubmit={(e) => {
-            e.stopPropagation();
-            return handleSubmit(onSubmit)(e);
           }}
         >
-          {removeSearchBox ? null : (
-            <Box sx={{ p: "16px 11.5px" }}>
-              <RootInputBox
-                placeholder="جستجوی عنوان"
-                variant="filled"
-                autoComplete="off"
-                slotProps={{
-                  input: {
-                    disableUnderline: true,
-                    sx: {
-                      borderRadius: "10px",
-                      px: 1,
-                      height: 48,
-                      input: {
-                        paddingTop: "5px",
-                        fontSize: 12,
+          <Stack
+            sx={{ width: "inherit" }}
+            component="form"
+            noValidate
+            onSubmit={(e) => {
+              e.stopPropagation();
+              return handleSubmit(onSubmit)(e);
+            }}
+          >
+            {removeSearchBox ? null : (
+              <Box sx={{ p: "16px 11.5px" }}>
+                <RootInputBox
+                  placeholder="جستجوی عنوان"
+                  variant="filled"
+                  autoComplete="off"
+                  slotProps={{
+                    input: {
+                      disableUnderline: true,
+                      sx: {
+                        borderRadius: "10px",
+                        px: 1,
+                        height: 48,
+                        input: {
+                          paddingTop: "5px",
+                          fontSize: 12,
+                        },
                       },
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <SearchIcon />
+                        </InputAdornment>
+                      ),
                     },
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <SearchIcon />
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-                onChange={handleSearchInput}
-              />
-            </Box>
-          )}
-          <CheckBoxGroup
-            options={baseOptions}
-            onChange={handleCheckBoxGroupChange}
-          />
-          <Stack sx={{ padding: "16px 13px" }} direction="row" spacing={1}>
-            <Btn
-              sx={{ borderRadius: "10px", width: 1 }}
-              type="button"
-              variant="outlined"
-              onClick={handleResetClick}
-            >
-              انصراف
-            </Btn>
-            <Btn sx={{ borderRadius: "10px", width: 1 }} type="submit">
-              افزودن
-            </Btn>
+                  }}
+                  onChange={handleSearchInput}
+                />
+              </Box>
+            )}
+            <CheckBoxGroup
+              fullWidth
+              options={baseOptions}
+              onChange={handleCheckBoxGroupChange}
+            />
+            <Stack sx={{ padding: "16px 13px" }} direction="row" spacing={1}>
+              <Btn
+                sx={{ borderRadius: "10px", width: 1 }}
+                type="button"
+                variant="outlined"
+                onClick={handleResetClick}
+              >
+                انصراف
+              </Btn>
+              <Btn sx={{ borderRadius: "10px", width: 1 }} type="submit">
+                افزودن
+              </Btn>
+            </Stack>
           </Stack>
-        </Stack>
-      </Popover>
-    </>
-  );
-};
+        </Popover>
+      </>
+    );
+  }
+);
 
 MultiSelect.displayName = "MultiSelect";

@@ -4,6 +4,7 @@
 //   PhoneNumberInputBox,
 //   RangeDatePickerBox,
 // } from "@/components/ui/input-box";
+import { Btn } from "@/components/ui/btn";
 import { CheckBox } from "@/components/ui/check-box/CheckBox";
 import {
   CheckBoxGroup,
@@ -13,6 +14,7 @@ import { ChipBox } from "@/components/ui/chip-box/ChipBox";
 import { MultiSelect } from "@/components/ui/select-box/MultiSelect";
 import { Container, Stack } from "@mui/material";
 import { useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 const checkBoxOptions: CheckboxGroupOption[] = [
   { id: 0, label: "لیبل ۱", checked: false, name: "check1" },
@@ -24,26 +26,86 @@ const checkBoxOptions: CheckboxGroupOption[] = [
   // { id: 3, label: "لیبل 4", checked: false, name: "check4" },
 ];
 
+type FormValue = {
+  name: CheckboxGroupOption[];
+};
+
 const HomePage = () => {
+  const [v, setV] = useState<CheckboxGroupOption[]>([]);
+  const { handleSubmit, reset, control, setError } = useForm<FormValue>({
+    defaultValues: {
+      name: checkBoxOptions,
+    },
+  });
+
+  console.log(v);
+
+  const onSubmit: SubmitHandler<FormValue> = (data) => {
+    console.log(data);
+  };
 
   return (
     <Container sx={{ py: 4 }}>
-      <Stack spacing={5}>
-       
-        <MultiSelect
-          // disabled
-          // error
-          // removeSearchBox
-          // options={values}
-          // onChange={(a, b) => {
-          //   setValues(a);
-          //   console.log(b);
-          // }}
-          label="لیبل مالتی"
-          placeholder="وارد کنید درست هااا"
-          helperText="وارد کنید درست هااا"
+      <MultiSelect
+        // disabled
+        // error
+        // removeSearchBox
+        // options={values}
+        // onChange={(a, b) => {
+        //   setValues(a);
+        //   console.log(b);
+        // }}
+        options={checkBoxOptions}
+        onChange={setV}
+        // {...restField}
+        label="لیبل مالتی"
+        placeholder="وارد کنید درست هااا"
+        // helperText={error?.message}
+        // error={!!error?.message}
+      />
+      <Stack spacing={5} component="form" onSubmit={handleSubmit(onSubmit)}>
+        <Controller
+          name="name"
+          control={control}
+          render={({
+            field: { value, onChange, ...restField },
+            fieldState: { error },
+          }) => {
+            console.log("value", value);
+            return (
+              <MultiSelect
+                // disabled
+                // error
+                // removeSearchBox
+                // options={values}
+                // onChange={(a, b) => {
+                //   setValues(a);
+                //   console.log(b);
+                // }}
+                options={value}
+                onChange={onChange}
+                {...restField}
+                label="لیبل مالتی"
+                placeholder="وارد کنید درست هااا"
+                helperText={error?.message}
+                error={!!error?.message}
+              />
+            );
+          }}
         />
-        
+        <Btn
+          type="button"
+          onClick={() => {
+            reset({ name: checkBoxOptions });
+            setError("name", {
+              type: "value",
+              message: "asdkj aslkj dlkasdlj",
+            });
+          }}
+        >
+          حذف
+        </Btn>
+        <Btn type="submit">ارسال</Btn>
       </Stack>
     </Container>
   );
