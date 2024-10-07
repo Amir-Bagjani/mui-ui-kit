@@ -8,6 +8,13 @@
 @font-face {
   font-family: "IranYekan";
   font-style: normal;
+  font-weight: 500;
+  font-display: block;
+  src: url("/fonts/IRANYekanWeb(FaNum)Medium.ttf") format("truetype");
+}
+@font-face {
+  font-family: "IranYekan";
+  font-style: normal;
   font-weight: 700;
   font-display: block;
   src: url("/fonts/IRANYekanWeb(FaNum)Bold.ttf") format("truetype");

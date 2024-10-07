@@ -95,8 +95,6 @@ const theme = createTheme({
     MuiCssBaseline: {
       styleOverrides: (t) => ({
         "*": {
-          // scrollbarColor: "grey gainsboro",
-          // scrollbarWidth: "thin",
           "&::-webkit-scrollbar": {
             width: "0.5rem",
             height: "0.5rem",
