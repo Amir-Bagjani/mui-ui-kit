@@ -8,8 +8,8 @@ import {
 import {
   ChangeEventHandler,
   ComponentProps,
-  FC,
   FormEventHandler,
+  forwardRef,
   useState,
 } from "react";
 
@@ -58,157 +58,166 @@ const styles = {
   },
 };
 
-export const PhoneNumberInputBox: FC<PhoneNumberInputBoxProps> = ({
-  label,
-  error,
-  disabled,
-  fullWidth,
-  helperText,
-  phoneInput = {},
-  codeInput = {},
-  containerProps,
-}) => {
-  const {
-    onChange = () => {},
-    onInput = () => {},
-    onRemoveNumber = () => {},
-    placeholder = "xxxx-xxxx",
-    ...restPhoneInput
-  } = phoneInput;
+export const PhoneNumberInputBox = forwardRef<
+  HTMLInputElement,
+  PhoneNumberInputBoxProps
+>(
+  (
+    {
+      label,
+      error,
+      disabled,
+      fullWidth,
+      helperText,
+      phoneInput = {},
+      codeInput = {},
+      containerProps,
+    },
+    ref
+  ) => {
+    const {
+      onChange = () => {},
+      onInput = () => {},
+      onRemoveNumber = () => {},
+      placeholder = "xxxx-xxxx",
+      ...restPhoneInput
+    } = phoneInput;
 
-  const [showPassBtn, setShowPassBtn] = useState(false);
+    const [showPassBtn, setShowPassBtn] = useState(false);
 
-  const _onChange: ChangeEventHandler<
-    HTMLInputElement | HTMLTextAreaElement
-  > = (...e) => {
-    onChange?.(...e);
+    const _onChange: ChangeEventHandler<
+      HTMLInputElement | HTMLTextAreaElement
+    > = (...e) => {
+      onChange?.(...e);
 
-    if (e[0].target.value) {
-      setShowPassBtn(true);
-    } else {
-      setShowPassBtn(false);
-    }
-  };
+      if (e[0].target.value) {
+        setShowPassBtn(true);
+      } else {
+        setShowPassBtn(false);
+      }
+    };
 
-  const _onInput: FormEventHandler<HTMLDivElement> = (...e) => {
-    onInput?.(...e);
+    const _onInput: FormEventHandler<HTMLDivElement> = (...e) => {
+      onInput?.(...e);
 
-    const target = e[0].target as HTMLInputElement;
-    target.value = target.value.toString().slice(0, 8);
-  };
+      const target = e[0].target as HTMLInputElement;
+      target.value = target.value.toString().slice(0, 8);
+    };
 
-  const codeOnInput: FormEventHandler<HTMLDivElement> = (...e) => {
-    codeInput?.onInput?.(...e);
+    const codeOnInput: FormEventHandler<HTMLDivElement> = (...e) => {
+      codeInput?.onInput?.(...e);
 
-    const target = e[0].target as HTMLInputElement;
-    target.value = target.value.toString().slice(0, 3);
-  };
+      const target = e[0].target as HTMLInputElement;
+      target.value = target.value.toString().slice(0, 3);
+    };
 
-  const _onRemoveNumber: () => void = () => {
-    onRemoveNumber?.(() => setShowPassBtn(false));
-  };
+    const _onRemoveNumber: () => void = () => {
+      onRemoveNumber?.(() => setShowPassBtn(false));
+    };
 
-  return (
-    <Box
-      {...containerProps}
-      sx={[
-        { width: fullWidth ? 1 : 280 },
-        ...(Array.isArray(containerProps?.sx)
-          ? containerProps.sx
-          : [containerProps?.sx]),
-      ]}
-    >
+    return (
       <Box
-        component="span"
-        sx={{
-          display: "block",
-          marginInlineStart: 0.5,
-          fontSize: 12,
-          color: disabled ? "grey.100" : "black.500",
-        }}
+        {...containerProps}
+        sx={[
+          { width: fullWidth ? 1 : 280 },
+          ...(Array.isArray(containerProps?.sx)
+            ? containerProps.sx
+            : [containerProps?.sx]),
+        ]}
       >
-        {label}
-      </Box>
-      <Stack direction="row" spacing={1}>
-        <RootInputBox
-          dir="ltr"
-          sx={{ width: 224, ...styles }}
-          containerProps={{
-            component: "label",
-            sx: {
-              width: 224,
-            },
+        <Box
+          component="span"
+          sx={{
+            display: "block",
+            marginInlineStart: 0.5,
+            fontSize: 12,
+            color: disabled ? "grey.100" : "black.500",
           }}
-          slotProps={{
-            input: {
+        >
+          {label}
+        </Box>
+        <Stack direction="row" spacing={1}>
+          <RootInputBox
+            dir="ltr"
+            ref={ref}
+            sx={{ width: 224, ...styles }}
+            containerProps={{
+              component: "label",
               sx: {
-                borderRadius: 2,
-                height: 48,
                 width: 224,
               },
-              endAdornment: showPassBtn ? (
-                <InputAdornment position="start">
-                  <IconButton disableRipple onClick={_onRemoveNumber}>
-                    <PassBoldIcon />
-                  </IconButton>
-                </InputAdornment>
-              ) : null,
-            },
-          }}
-          placeholder={placeholder}
-          onChange={_onChange}
-          onInput={_onInput}
-          disabled={disabled}
-          {...restPhoneInput}
-          error={error}
-          type="number"
-          label=""
-          helperText=""
-        />
-        <RootInputBox
-          dir="ltr"
-          sx={{ width: 48, ...styles }}
-          containerProps={{
-            component: "label",
-            sx: {
-              width: 48,
-            },
-          }}
-          slotProps={{
-            input: {
+            }}
+            slotProps={{
+              input: {
+                sx: {
+                  borderRadius: 2,
+                  height: 48,
+                  width: 224,
+                },
+                endAdornment: showPassBtn ? (
+                  <InputAdornment position="start">
+                    <IconButton disableRipple onClick={_onRemoveNumber}>
+                      <PassBoldIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ) : null,
+              },
+            }}
+            placeholder={placeholder}
+            onChange={_onChange}
+            onInput={_onInput}
+            disabled={disabled}
+            {...restPhoneInput}
+            error={error}
+            type="number"
+            label=""
+            helperText=""
+          />
+          <RootInputBox
+            dir="ltr"
+            sx={{ width: 48, ...styles }}
+            containerProps={{
+              component: "label",
               sx: {
-                borderRadius: 2,
-                height: 48,
                 width: 48,
-                input: {
-                  px: 1,
+              },
+            }}
+            slotProps={{
+              input: {
+                sx: {
+                  borderRadius: 2,
+                  height: 48,
+                  width: 48,
+                  input: {
+                    px: 1,
+                  },
                 },
               },
-            },
+            }}
+            placeholder="021"
+            onInput={codeOnInput}
+            disabled={disabled}
+            {...codeInput}
+            error={error}
+            type="number"
+            label=""
+            helperText=""
+          />
+        </Stack>
+        <FormHelperText
+          sx={{
+            display: "block",
+            color: error ? "error.main" : disabled ? "grey.100" : "black.700",
+            fontSize: 12,
+            marginInlineStart: 1.5,
+            mt: 0.5,
           }}
-          placeholder="021"
-          onInput={codeOnInput}
-          disabled={disabled}
-          {...codeInput}
-          error={error}
-          type="number"
-          label=""
-          helperText=""
-        />
-      </Stack>
-      <FormHelperText
-        sx={{
-          display: "block",
-          color: error ? "error.main" : disabled ? "grey.100" : "black.700",
-          fontSize: 12,
-          marginInlineStart: 1.5,
-          mt: 0.5,
-        }}
-      >
-        {helperText}
-      </FormHelperText>
-    </Box>
-  );
-};
+        >
+          {helperText}
+        </FormHelperText>
+      </Box>
+    );
+  }
+);
 
 PhoneNumberInputBox.displayName = "PhoneNumberInputBox";

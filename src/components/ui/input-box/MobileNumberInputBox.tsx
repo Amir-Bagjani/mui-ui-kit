@@ -1,5 +1,10 @@
 import { IconButton, InputAdornment } from "@mui/material";
-import { ChangeEventHandler, FC, FormEventHandler, useState } from "react";
+import {
+  ChangeEventHandler,
+  FormEventHandler,
+  forwardRef,
+  useState,
+} from "react";
 
 //components
 import { PassBoldIcon } from "@/assets/icons/PassBoldIcon";
@@ -18,64 +23,73 @@ export type MobileNumberInputBoxProps = Override<
   }
 >;
 
-export const MobileNumberInputBox: FC<MobileNumberInputBoxProps> = ({
-  type = "number",
-  onChange,
-  onInput,
-  onRemoveNumber,
-  placeholder = "09xx xxx xxxx",
-  ...props
-}) => {
-  const [showPassBtn, setShowPassBtn] = useState(false);
+export const MobileNumberInputBox = forwardRef<
+  HTMLInputElement,
+  MobileNumberInputBoxProps
+>(
+  (
+    {
+      type = "number",
+      onChange,
+      onInput,
+      onRemoveNumber,
+      placeholder = "09xx xxx xxxx",
+      ...props
+    },
+    ref
+  ) => {
+    const [showPassBtn, setShowPassBtn] = useState(false);
 
-  const _onChange: React.ChangeEventHandler<
-    HTMLInputElement | HTMLTextAreaElement
-  > = (...e) => {
-    onChange?.(...e);
+    const _onChange: React.ChangeEventHandler<
+      HTMLInputElement | HTMLTextAreaElement
+    > = (...e) => {
+      onChange?.(...e);
 
-    if (e[0].target.value) {
-      setShowPassBtn(true);
-    } else {
-      setShowPassBtn(false);
-    }
-  };
+      if (e[0].target.value) {
+        setShowPassBtn(true);
+      } else {
+        setShowPassBtn(false);
+      }
+    };
 
-  const _onInput: FormEventHandler<HTMLDivElement> = (...e) => {
-    onInput?.(...e);
+    const _onInput: FormEventHandler<HTMLDivElement> = (...e) => {
+      onInput?.(...e);
 
-    const target = e[0].target as HTMLInputElement;
-    target.value = target.value.toString().slice(0, 11);
-  };
+      const target = e[0].target as HTMLInputElement;
+      target.value = target.value.toString().slice(0, 11);
+    };
 
-  const _onRemoveNumber: () => void = () => {
-    onRemoveNumber?.(() => setShowPassBtn(false));
-  };
+    const _onRemoveNumber: () => void = () => {
+      onRemoveNumber?.(() => setShowPassBtn(false));
+    };
 
-  return (
-    <RootInputBox
-      dir="ltr"
-      slotProps={{
-        input: {
-          sx: {
-            borderRadius: 2,
-            height: 48,
+    return (
+      <RootInputBox
+        dir="ltr"
+        ref={ref}
+        slotProps={{
+          input: {
+            sx: {
+              borderRadius: 2,
+              height: 48,
+            },
+            endAdornment: showPassBtn ? (
+              <InputAdornment position="start">
+                <IconButton disableRipple onClick={_onRemoveNumber}>
+                  <PassBoldIcon />
+                </IconButton>
+              </InputAdornment>
+            ) : null,
           },
-          endAdornment: showPassBtn ? (
-            <InputAdornment position="start">
-              <IconButton disableRipple onClick={_onRemoveNumber}>
-                <PassBoldIcon />
-              </IconButton>
-            </InputAdornment>
-          ) : null,
-        },
-      }}
-      placeholder={placeholder}
-      onChange={_onChange}
-      onInput={_onInput}
-      {...props}
-      type={type}
-    />
-  );
-};
+        }}
+        placeholder={placeholder}
+        onChange={_onChange}
+        onInput={_onInput}
+        {...props}
+        type={type}
+      />
+    );
+  }
+);
 
 MobileNumberInputBox.displayName = "MobileNumberInputBox";

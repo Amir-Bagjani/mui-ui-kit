@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { forwardRef, useState } from "react";
 import { IconButton, InputAdornment } from "@mui/material";
 
 //components
@@ -17,53 +17,51 @@ export type PassInputBoxProps = Override<
   }
 >;
 
-export const PassInputBox: FC<PassInputBoxProps> = ({
-  type = "password",
-  onChange,
-  onRemovePassword,
-  ...props
-}) => {
-  const [showPassBtn, setShowPassBtn] = useState(false);
+export const PassInputBox = forwardRef<HTMLInputElement, PassInputBoxProps>(
+  ({ type = "password", onChange, onRemovePassword, ...props }, ref) => {
+    const [showPassBtn, setShowPassBtn] = useState(false);
 
-  const _onChange: React.ChangeEventHandler<
-    HTMLInputElement | HTMLTextAreaElement
-  > = (...e) => {
-    onChange?.(...e);
+    const _onChange: React.ChangeEventHandler<
+      HTMLInputElement | HTMLTextAreaElement
+    > = (...e) => {
+      onChange?.(...e);
 
-    if (e[0].target.value) {
-      setShowPassBtn(true);
-    } else {
-      setShowPassBtn(false);
-    }
-  };
+      if (e[0].target.value) {
+        setShowPassBtn(true);
+      } else {
+        setShowPassBtn(false);
+      }
+    };
 
-  const _onRemovePassword: () => void = () => {
-    onRemovePassword?.(() => setShowPassBtn(false));
-  };
+    const _onRemovePassword: () => void = () => {
+      onRemovePassword?.(() => setShowPassBtn(false));
+    };
 
-  return (
-    <RootInputBox
-      slotProps={{
-        input: {
-          sx: {
-            borderRadius: 2,
-            px: 1,
-            height: 48,
+    return (
+      <RootInputBox
+        ref={ref}
+        slotProps={{
+          input: {
+            sx: {
+              borderRadius: 2,
+              px: 1,
+              height: 48,
+            },
+            endAdornment: showPassBtn ? (
+              <InputAdornment position="end">
+                <IconButton disableRipple onClick={_onRemovePassword}>
+                  <PassBoldIcon />
+                </IconButton>
+              </InputAdornment>
+            ) : null,
           },
-          endAdornment: showPassBtn ? (
-            <InputAdornment position="end">
-              <IconButton disableRipple onClick={_onRemovePassword}>
-                <PassBoldIcon />
-              </IconButton>
-            </InputAdornment>
-          ) : null,
-        },
-      }}
-      onChange={_onChange}
-      {...props}
-      type={type}
-    />
-  );
-};
+        }}
+        onChange={_onChange}
+        {...props}
+        type={type}
+      />
+    );
+  }
+);
 
 PassInputBox.displayName = "PassInputBox";

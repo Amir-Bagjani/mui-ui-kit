@@ -139,7 +139,7 @@ export const RangeDatePickerBox: FC<RangeDatePickerBoxProps> = ({
       <DatePicker
         format={format}
         fixMainPosition
-        renderButton={(direction, handleClick) => {
+        renderButton={(direction: any, handleClick: any) => {
           return direction === "left" ? (
             <Box sx={{ px: 2 }}>
               <ChevronRightIcon

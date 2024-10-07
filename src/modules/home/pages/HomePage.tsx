@@ -46,66 +46,9 @@ const HomePage = () => {
 
   return (
     <Container sx={{ py: 4 }}>
-      <MultiSelect
-        // disabled
-        // error
-        // removeSearchBox
-        // options={values}
-        // onChange={(a, b) => {
-        //   setValues(a);
-        //   console.log(b);
-        // }}
-        options={checkBoxOptions}
-        onChange={setV}
-        // {...restField}
-        label="لیبل مالتی"
-        placeholder="وارد کنید درست هااا"
-        // helperText={error?.message}
-        // error={!!error?.message}
-      />
+     
       <Stack spacing={5} component="form" onSubmit={handleSubmit(onSubmit)}>
-        <Controller
-          name="name"
-          control={control}
-          render={({
-            field: { value, onChange, ...restField },
-            fieldState: { error },
-          }) => {
-            console.log("value", value);
-            return (
-              <MultiSelect
-                // disabled
-                // error
-                // removeSearchBox
-                // options={values}
-                // onChange={(a, b) => {
-                //   setValues(a);
-                //   console.log(b);
-                // }}
-                options={value}
-                onChange={onChange}
-                {...restField}
-                label="لیبل مالتی"
-                placeholder="وارد کنید درست هااا"
-                helperText={error?.message}
-                error={!!error?.message}
-              />
-            );
-          }}
-        />
-        <Btn
-          type="button"
-          onClick={() => {
-            reset({ name: checkBoxOptions });
-            setError("name", {
-              type: "value",
-              message: "asdkj aslkj dlkasdlj",
-            });
-          }}
-        >
-          حذف
-        </Btn>
-        <Btn type="submit">ارسال</Btn>
+       
       </Stack>
     </Container>
   );
