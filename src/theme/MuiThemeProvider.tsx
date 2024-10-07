@@ -42,6 +42,7 @@ const theme = createTheme({
       "100": "#B7366D", //01
       "200": "#C890A8", //02
       "300": "#F8EEF2", //03
+      "500": "#D71362", //dashboard
     },
     text: {
       primary: "#505050",
@@ -59,7 +60,6 @@ const theme = createTheme({
       "100": "#CEEED6", //01
       "200": "#EBF7EE", //02
     },
-
     grey: {
       "100": "#B6B6B6", //gray 01-B6
       "200": "#D1D1D1", //gray 02-D1

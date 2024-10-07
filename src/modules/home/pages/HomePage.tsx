@@ -18,9 +18,13 @@ const HomePage = () => {
      
       <Stack spacing={5}>
        <Text>Text</Text>
+       <Text color="primary">Text</Text>
        <Text variant="b1">Text</Text>
+       <Text color="black-300" variant="b1">Text</Text>
        <Text variant="h1">Text</Text>
+       <Text color="black-900" variant="h1">Text</Text>
        <Text variant="b2-bold">Text</Text>
+       <Text color="grey-400" variant="b2-bold">Text</Text>
       </Stack>
     </Container>
   );

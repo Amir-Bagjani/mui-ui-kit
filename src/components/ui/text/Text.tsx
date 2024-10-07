@@ -21,6 +21,7 @@ type TextVariant =
   | "c1-bold";
 
 type TextColor =
+  | "primary"
   | "black-300"
   | "black-500"
   | "black-700"
@@ -119,6 +120,7 @@ const typographyStyle: Record<string, SxProps<Theme>> = {
 };
 
 const TextColorMap = {
+  "primary": "primary.main",
   "black-300": "black.300",
   "black-500": "black.500",
   "black-700": "black.700",
