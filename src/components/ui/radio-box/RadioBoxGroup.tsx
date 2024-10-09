@@ -1,5 +1,5 @@
 import { Box, FormHelperText, Stack } from "@mui/material";
-import { ComponentProps, forwardRef, useState } from "react";
+import { ComponentProps, forwardRef, ReactNode, useState } from "react";
 
 //components & utils
 import { RadioBox, RadioBoxProps } from "./RadioBox";
@@ -17,10 +17,11 @@ export type RadioBoxGroupProps = Override<
     options: RadioBoxGroupOption[];
     value?: RadioBoxProps["value"];
     color?: RadioBoxProps["color"];
+    name?: RadioBoxProps["name"];
     defaultValue?: string | number;
     onChange?: (value: any) => void;
     label?: string;
-    helperText?: string;
+    helperText?: ReactNode;
     error?: boolean;
     fullWidth?: boolean;
     disabled?: boolean;
@@ -37,6 +38,7 @@ export const RadioBoxGroup = forwardRef<HTMLDivElement, RadioBoxGroupProps>(
       defaultValue,
       onChange,
       label,
+      name,
       helperText,
       error,
       color,
@@ -98,6 +100,7 @@ export const RadioBoxGroup = forwardRef<HTMLDivElement, RadioBoxGroupProps>(
               ref={ref as any}
               error={error}
               color={color}
+              name={name}
               disabled={disabled}
               {...option}
               checked={activeValue === option.value}

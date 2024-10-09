@@ -1,19 +1,25 @@
-import { FC } from "react";
-import { useController, UseControllerProps } from "react-hook-form";
+import {
+  Control,
+  FieldValues,
+  useController,
+  UseControllerProps,
+} from "react-hook-form";
 
-//components
-import { CheckBox, CheckBoxProps } from "./CheckBox";
+//component
+import { RadioBoxGroup, RadioBoxGroupProps } from "./RadioBoxGroup";
 
-export type CheckBoxFormProps = Omit<CheckBoxProps, "ref"> &
-  UseControllerProps & {
+export type RadioBoxGroupFormProps<T extends FieldValues> = Omit<
+  RadioBoxGroupProps,
+  "ref"
+> &
+  Omit<UseControllerProps, "control"> & {
+    control?: Control<T, any>;
     disableError?: boolean;
     hideErrorMessage?: boolean;
   };
-
-export const CheckBoxForm: FC<CheckBoxFormProps> = ({
+export const RadioBoxGroupForm = <T extends FieldValues>({
   name,
   rules,
-  onBlur,
   control,
   onChange,
   defaultValue,
@@ -21,33 +27,27 @@ export const CheckBoxForm: FC<CheckBoxFormProps> = ({
   disableError = false,
   hideErrorMessage = false,
   ...reset
-}) => {
+}: RadioBoxGroupFormProps<T>) => {
   const { field, fieldState } = useController({
     name,
     rules,
-    control,
+    control: control as Control<FieldValues>,
     defaultValue,
     shouldUnregister,
   });
 
-  const _onChange: CheckBoxProps["onChange"] = (...e) => {
+  const _onChange: RadioBoxGroupProps["onChange"] = (...e) => {
     field.onChange(...e);
     onChange?.(...e);
   };
 
-  const _onBlur: CheckBoxProps["onBlur"] = (...e) => {
-    field.onBlur();
-    onBlur?.(...e);
-  };
-
   return (
-    <CheckBox
+    <RadioBoxGroup
       {...reset}
       ref={field.ref}
       name={field.name}
-      checked={field.value}
+      value={field.value}
       onChange={_onChange}
-      onBlur={_onBlur}
       error={disableError ? undefined : !!fieldState.error?.message}
       helperText={hideErrorMessage ? undefined : fieldState.error?.message}
     />
