@@ -1,4 +1,4 @@
-import { ROUTES_NAME } from "@/utils/routeNames";
+import { ROUTES_NAME } from "@/routes/routeNames";
 import { lazyWithRetry } from "@/utils/lazyWithRetry";
 import { CustomRouteObject } from "@/models/CustomRouteObject.type";
 

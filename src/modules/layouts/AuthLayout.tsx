@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 //components & utils
 import { useAuth } from "@/context/AuthProvider";
-import { ROUTES_NAME } from "@/utils/routeNames";
+import { ROUTES_NAME } from "@/routes/routeNames";
 
 export const AuthLayout = () => {
   const { user } = useAuth();

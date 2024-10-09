@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 
 //utils
-import { ROUTES_NAME } from "@/utils/routeNames";
+import { ROUTES_NAME } from "@/routes/routeNames";
 import { useAuth } from "@/context/AuthProvider";
 
 export const AppLayout = () => {

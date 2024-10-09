@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 //utils
-import { ROUTES_NAME } from "@/utils/routeNames";
+import { ROUTES_NAME } from "@/routes/routeNames";
 
 const NotFoundPage = () => {
   return (

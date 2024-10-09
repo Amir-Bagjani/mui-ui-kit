@@ -4,6 +4,7 @@ import {
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
+  useRoutes,
 } from "react-router-dom";
 import { Suspense } from "react";
 
@@ -16,7 +17,7 @@ import { AppLayout } from "@/modules/layouts/AppLayout";
 import { AuthLayout } from "@/modules/layouts/AuthLayout";
 
 //utils
-import { ROUTES_NAME } from "@/utils/routeNames";
+import { ROUTES_NAME } from "@/routes/routeNames";
 import { APPLICATION_ROUTES, AUTH_ROUTES } from "./applicationRoutes";
 import { AuthStatus, ROUTE_AUTH_STATUS, useAuth } from "@/context/AuthProvider";
 
@@ -24,12 +25,42 @@ import { AuthStatus, ROUTE_AUTH_STATUS, useAuth } from "@/context/AuthProvider";
 import type { User } from "@/models/user.type";
 import type { CustomRouteObject } from "@/models/CustomRouteObject.type";
 
+/**
+ * 
+ * function App() {
+  let element = useRoutes([
+    {
+      path: "/",
+      element: <Dashboard />,
+      children: [
+        {
+          path: "messages",
+          element: <DashboardMessages />,
+        },
+        { path: "tasks", element: <DashboardTasks /> },
+      ],
+    },
+    { path: "team", element: <AboutPage /> },
+  ]);
+
+  return element;
+}
+ */
+
+const allInsurerRoutes = {
+  
+}as const
+
 export const RouteWrapper = () => {
   const { user, status } = useAuth();
 
   const router = getRoutes(user, status);
 
-  return <RouterProvider router={router} />;
+  const routes = 
+
+ return  useRoutes()
+
+  // return <RouterProvider router={router} />;
 };
 
 const LayoutMap = {
