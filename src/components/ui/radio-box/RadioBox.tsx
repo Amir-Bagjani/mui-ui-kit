@@ -1,8 +1,9 @@
 import { Override } from "@/models/override";
 import { Box, ButtonBase, FormHelperText } from "@mui/material";
-import { ComponentProps, forwardRef, ReactNode } from "react";
+import { ChangeEvent, ComponentProps, forwardRef, ReactNode } from "react";
 
 type InputProps = ComponentProps<typeof Box<"input">>;
+type ChangeEventInput = ChangeEvent<HTMLInputElement>;
 
 export type RadioBoxProps = Override<
   InputProps,
@@ -12,6 +13,7 @@ export type RadioBoxProps = Override<
     error?: boolean;
     component?: "input";
     color?: "primary" | "secondary";
+    onChange?: (event: ChangeEventInput, value: any) => void;
     labelProps?: ComponentProps<typeof Box<"label">>;
     labelTextProps?: ComponentProps<typeof Box<"span">>;
     buttonBaseProps?: ComponentProps<typeof ButtonBase<"span">>;
@@ -29,6 +31,7 @@ export const RadioBox = forwardRef<HTMLInputElement, RadioBoxProps>(
       label,
       error,
       disabled,
+      onChange,
       helperText,
       component = "input",
       color = "secondary",
@@ -42,24 +45,18 @@ export const RadioBox = forwardRef<HTMLInputElement, RadioBoxProps>(
   ) => {
     const borderColor = BorderColorMap[color];
 
+    const handleChange = (e: ChangeEventInput) => {
+      const { value } = e.target;
+      onChange?.(e, value);
+    };
+
     return (
-      <Box
-        {...containerProps}
-        // sx={[
-        //   { 
-           
-        //    },
-        //   ...(Array.isArray(containerProps?.sx)
-        //     ? containerProps.sx
-        //     : [containerProps?.sx]),
-        // ]}
-      >
+      <Box {...containerProps}>
         <Box
           component="label"
           {...labelProps}
           sx={[
             {
-            //   width: fullWidth ? 1 : 280,
               display: "flex",
               alignItems: "center",
               cursor: "pointer",
@@ -81,6 +78,7 @@ export const RadioBox = forwardRef<HTMLInputElement, RadioBoxProps>(
             <Box
               ref={ref}
               disabled={disabled}
+              onChange={handleChange}
               {...props}
               component={component}
               type="radio"

@@ -1,8 +1,6 @@
-import {
-  RadioBoxGroup,
-  RadioBoxGroupOption,
-} from "@/components/ui/radio-box/RadioBoxGroup";
-import { RadioBoxGroupForm } from "@/components/ui/radio-box/RadioBoxGroupForm";
+import { CheckBoxForm } from "@/components/ui/check-box/CheckBoxForm";
+import { RadioBox } from "@/components/ui/radio-box/RadioBox";
+import { RadioBoxGroupOption } from "@/components/ui/radio-box/RadioBoxGroup";
 import { Container, Stack } from "@mui/material";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -15,7 +13,7 @@ const op: RadioBoxGroupOption[] = [
 ];
 
 type FormValue = {
-  check: string;
+  check: boolean;
 };
 const HomePage = () => {
   const [p, setP] = useState("");
@@ -24,7 +22,7 @@ const HomePage = () => {
 
   const { control, handleSubmit } = useForm<FormValue>({
     defaultValues: {
-      check: "",
+      check: false,
     },
   });
 
@@ -35,22 +33,12 @@ const HomePage = () => {
   return (
     <Container sx={{ py: 4 }}>
       <Stack spacing={5} component={"form"} onSubmit={handleSubmit(onSubmit)}>
-        <RadioBoxGroupForm
-          options={op}
+        <CheckBoxForm
           name="check"
           control={control}
-          // disabled
-          // helperText="asdas asd"
-          // value={p}
-          color="secondary"
+          label="asdsad"
           rules={{
-            required: { value: true, message: "تاریخ شروع را وارد کنید" },
-          }}
-          // onChange={setP}
-          label="حقیقی حقوقی"
-          // helperText="حقیقی"
-          radioListProps={{
-            width: 380,
+            required: { value: true, message: "asdsadsad" },
           }}
         />
         <button type="submit">submit</button>

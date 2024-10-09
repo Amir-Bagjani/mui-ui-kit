@@ -1,16 +1,23 @@
-import { FC } from "react";
-import { useController, UseControllerProps } from "react-hook-form";
-
+import {
+  Control,
+  FieldValues,
+  useController,
+  UseControllerProps,
+} from "react-hook-form";
 //components
 import { CheckBox, CheckBoxProps } from "./CheckBox";
 
-export type CheckBoxFormProps = Omit<CheckBoxProps, "ref"> &
-  UseControllerProps & {
+export type CheckBoxFormProps<T extends FieldValues> = Omit<
+  CheckBoxProps,
+  "ref"
+> &
+  Omit<UseControllerProps, "control"> & {
+    control?: Control<T, any>;
     disableError?: boolean;
     hideErrorMessage?: boolean;
   };
 
-export const CheckBoxForm: FC<CheckBoxFormProps> = ({
+export const CheckBoxForm =  <T extends FieldValues>({
   name,
   rules,
   onBlur,
@@ -21,11 +28,11 @@ export const CheckBoxForm: FC<CheckBoxFormProps> = ({
   disableError = false,
   hideErrorMessage = false,
   ...reset
-}) => {
+}: CheckBoxFormProps<T>) => {
   const { field, fieldState } = useController({
     name,
     rules,
-    control,
+    control: control as Control<FieldValues>,
     defaultValue,
     shouldUnregister,
   });
