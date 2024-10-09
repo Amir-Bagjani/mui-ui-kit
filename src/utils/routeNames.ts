@@ -1,3 +1,5 @@
+// import { useRoutes } from "react-router-dom";
+
 export const baseRoute = "/";
 export const baseAuth = baseRoute + "authentication";
 
@@ -9,3 +11,32 @@ export const ROUTES_NAME = {
     register: baseAuth + "/register",
   },
 };
+
+
+// const dayRoutes= {
+
+// branch:[
+//   {path:'dashboard',element:<BranchDashboard/>,children:[{}]
+// ]
+
+
+
+// agent:[
+//   {path:'dashboard',element:<AgentDashboard/>,children:[{}]
+// ]
+// }
+
+
+// const hafezRoutes= {
+
+//   branch:[
+//     {path:'dashboard',element:<BranchDashboard/>,children:[{}]
+//   ]
+  
+  
+  
+//   agent:[
+//     {path:'dashboard',element:<AgentDashboard/>,children:[{}]
+//   ]
+//   }
+// useRoutes(routes[role])

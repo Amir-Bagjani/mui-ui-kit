@@ -13,11 +13,13 @@ import { ComponentProps, FC, ReactNode, useRef } from "react";
 //components
 import { CalenderIcon } from "@/assets/icons/CalenderIcon";
 import { ChevronLeftIcon } from "@/assets/icons/ChevronLeftIcon";
-import { RootInputBox, RootInputBoxProps } from "./RootInputBox";
 import { ChevronRightIcon } from "@/assets/icons/ChevronRightIcon";
+import { RootInputBox, RootInputBoxProps } from "@/components/ui/input-box/RootInputBox";
 
 //types
 import { Override } from "@/models/override";
+
+import "react-multi-date-picker/styles/colors/green.css"
 
 export type RangeDatePickerBoxProps = Override<
   ComponentProps<typeof DatePicker>,

@@ -1,17 +1,22 @@
 import DatePicker from "react-multi-date-picker";
-import { ComponentProps, FC, forwardRef, ReactNode } from "react";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
+import { ComponentProps, forwardRef, ReactNode } from "react";
 import { Box, IconButton, InputAdornment } from "@mui/material";
 
 //components
+import {
+  RootInputBox,
+  RootInputBoxProps,
+} from "@/components/ui/input-box/RootInputBox";
 import { CalenderIcon } from "@/assets/icons/CalenderIcon";
 import { ChevronLeftIcon } from "@/assets/icons/ChevronLeftIcon";
-import { RootInputBox, RootInputBoxProps } from "./RootInputBox";
 import { ChevronRightIcon } from "@/assets/icons/ChevronRightIcon";
 
 //types
 import { Override } from "@/models/override";
+
+import "react-multi-date-picker/styles/colors/green.css"
 
 export type DatePickerBoxProps = Override<
   ComponentProps<typeof DatePicker>,
@@ -71,11 +76,11 @@ export const DatePickerBox = forwardRef<HTMLInputElement, DatePickerBoxProps>(
             ".rmdp-header-values": {
               color: "black.700",
             },
-            ".rmdp-day:": {
+            ".rmdp-day": {
               color: "black.700",
             },
             ".rmdp-deactive": {
-              color: "grey.200",
+              color: "grey.100",
             },
             "--rmdp-primary-green": (t) => t.palette.primary.main,
             "--rmdp-secondary-green": "#87ad92",
@@ -89,7 +94,7 @@ export const DatePickerBox = forwardRef<HTMLInputElement, DatePickerBoxProps>(
         <DatePicker
           format={format}
           fixMainPosition
-          renderButton={(direction, handleClick) => {
+          renderButton={(direction:any, handleClick:any) => {
             return direction === "left" ? (
               <Box sx={{ px: 2 }}>
                 <ChevronRightIcon

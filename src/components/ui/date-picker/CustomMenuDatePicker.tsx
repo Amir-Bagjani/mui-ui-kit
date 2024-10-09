@@ -25,6 +25,8 @@ import { CheckPrimaryDisabledIcon } from "@/assets/icons/CheckPrimaryDisabledIco
 import { useMenu } from "@/hooks/common/useMenu";
 import { useModal } from "@/hooks/common/useModal";
 
+import "react-multi-date-picker/styles/colors/green.css"
+
 export type CustomMenuDatePickerData = {
   id: number;
   label: string;
@@ -237,7 +239,7 @@ export const CustomMenuDatePicker = <D extends CustomMenuDatePickerData>({
               calendar={persian}
               range
               rangeHover
-              renderButton={(direction, handleClick) => {
+              renderButton={(direction:any, handleClick:any) => {
                 return direction === "left" ? (
                   <Box sx={{ px: 2 }}>
                     <ChevronRightIcon
