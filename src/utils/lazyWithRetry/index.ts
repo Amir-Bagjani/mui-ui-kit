@@ -4,7 +4,7 @@ import { lazy } from "react";
  * based on https://maxtsh.medium.com/the-ultimate-guide-to-cache-busting-for-react-production-applications-d583e4248f02
  */
 
-type ComponentImportType = () => Promise<{ default: React.ComponentType<any> }>;
+export type ComponentImportType = () => Promise<{ default: React.ComponentType<any> }>;
 
 const sessionKey = "lazyWithRetry";
 

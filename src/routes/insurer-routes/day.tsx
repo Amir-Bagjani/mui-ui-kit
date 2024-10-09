@@ -1,18 +1,38 @@
+import ErrorBoundaryPage from "@/modules/error-boundary/pages/ErrorBoundaryPage";
+import { dayHomePageRoutes } from "@/modules/home/routes/day.home.routes";
+import { AppLayout } from "@/modules/layouts/AppLayout";
 import type { RolesType } from "@/utils/constant/roles";
 import { RouteObject } from "react-router-dom";
-import { ROUTES_NAME } from "../routeNames";
 
 export const dayRoutes: Record<RolesType, RouteObject[]> = {
   adjuster: [
     {
-      element: <></>,
-      errorElement: "error",
+      element: <AppLayout />,
+      errorElement: <ErrorBoundaryPage />,
       children: [
-        { element: "paged", path: ROUTES_NAME.home },
-        { element: "pagel", path: ROUTES_NAME.dashboard },
+        ...dayHomePageRoutes.adjuster,
+        // { element: "pagel", path: ROUTES_NAME.dashboard },
       ],
     },
   ],
-  agent: [],
-  branch: [],
+  agent: [
+    {
+      element: <AppLayout />,
+      errorElement: <ErrorBoundaryPage />,
+      children: [
+        ...dayHomePageRoutes.adjuster,
+        // { element: "pagel", path: ROUTES_NAME.dashboard },
+      ],
+    },
+  ],
+  branch: [
+    {
+      element: <AppLayout />,
+      errorElement: <ErrorBoundaryPage />,
+      children: [
+        ...dayHomePageRoutes.adjuster,
+        // { element: "pagel", path: ROUTES_NAME.dashboard },
+      ],
+    },
+  ],
 };

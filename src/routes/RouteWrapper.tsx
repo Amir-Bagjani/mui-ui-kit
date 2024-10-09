@@ -1,130 +1,70 @@
-import {
-  Route,
-  Navigate,
-  RouterProvider,
-  createBrowserRouter,
-  createRoutesFromElements,
-  useRoutes,
-} from "react-router-dom";
-import { Suspense } from "react";
+import { Navigate, RouteObject, useRoutes } from "react-router-dom";
 
 //pages
-import LoadingPage from "@/modules/loading-page/pages/LoadingPage";
 import ErrorBoundaryPage from "@/modules/error-boundary/pages/ErrorBoundaryPage";
+import LoadingPage from "@/modules/loading-page/pages/LoadingPage";
 
 //layouts
-import { AppLayout } from "@/modules/layouts/AppLayout";
 import { AuthLayout } from "@/modules/layouts/AuthLayout";
 
 //utils
-import { ROUTES_NAME } from "@/routes/routeNames";
-import { APPLICATION_ROUTES, AUTH_ROUTES } from "./applicationRoutes";
 import { AuthStatus, ROUTE_AUTH_STATUS, useAuth } from "@/context/AuthProvider";
+import { ROUTES_NAME } from "@/routes/routeNames";
 
 //types
+import { MAIN_SETTING } from "@/app-setting/mainSettings";
 import type { User } from "@/models/user.type";
-import type { CustomRouteObject } from "@/models/CustomRouteObject.type";
+import { DAY_INSURER } from "@/utils/constant/insurers";
+import { dayRoutes } from "./insurer-routes/day";
+import { lazyWithRetryComponent } from "./utils";
 
-/**
- * 
- * function App() {
-  let element = useRoutes([
-    {
-      path: "/",
-      element: <Dashboard />,
-      children: [
-        {
-          path: "messages",
-          element: <DashboardMessages />,
-        },
-        { path: "tasks", element: <DashboardTasks /> },
-      ],
-    },
-    { path: "team", element: <AboutPage /> },
-  ]);
-
-  return element;
-}
- */
+const LoginPage = lazyWithRetryComponent(
+  () => import("@/modules/authentication/pages/LoginPage"),
+  "LoginPage"
+);
 
 const allInsurerRoutes = {
-  
-}as const
+  [DAY_INSURER]: dayRoutes,
+} as const;
 
 export const RouteWrapper = () => {
   const { user, status } = useAuth();
 
-  const router = getRoutes(user, status);
+  const routes = getRoutes(user, status);
 
-  const routes = 
-
- return  useRoutes()
-
-  // return <RouterProvider router={router} />;
+  return useRoutes(routes);
 };
 
-const LayoutMap = {
-  App: () => <AppLayout />,
-  Login: () => <AuthLayout />,
-};
-
-const getRoutes = (user: User | null, status: AuthStatus) => {
+const getRoutes = (user: User | null, status: AuthStatus): RouteObject[] => {
   if (status === ROUTE_AUTH_STATUS.PENDING) {
-    return createBrowserRouter(
-      createRoutesFromElements(
-        <Route errorElement={<ErrorBoundaryPage />}>
-          <Route path="*" element={<LoadingPage />} />
-        </Route>
-      )
-    );
+    return [
+      {
+        errorElement: <ErrorBoundaryPage />,
+        element: <LoadingPage />,
+        path: ROUTES_NAME.anyRoutes,
+      },
+    ];
   }
 
   if (!user) {
-    return createBrowserRouter(
-      createRoutesFromElements(
-        <Route errorElement={<ErrorBoundaryPage />}>
-          {AUTH_ROUTES.map((r, i) => (
-            <Route
-              key={i}
-              element={LayoutMap[r.layout as keyof typeof LayoutMap]()}
-            >
-              <Route
-                path={r.path}
-                // TODO: create loading for fallback
-                element={<Suspense fallback={""}>{r.element}</Suspense>}
-              />
-            </Route>
-          ))}
-          <Route
-            path="*"
-            element={<Navigate to={ROUTES_NAME.authentication.login} />}
-          />
-        </Route>
-      )
-    );
+    return [
+      {
+        errorElement: <ErrorBoundaryPage />,
+        element: <AuthLayout />,
+        children: [
+          {
+            element: <LoginPage />,
+            path: ROUTES_NAME.authentication.login,
+          },
+          {
+            path: ROUTES_NAME.anyRoutes,
+            element: <Navigate to={ROUTES_NAME.authentication.login} />,
+          },
+        ],
+      },
+    ];
   }
+  const routes = allInsurerRoutes[MAIN_SETTING.APP_INSURER][user.role];
 
-  return createBrowserRouter(
-    createRoutesFromElements(
-      <Route errorElement={<ErrorBoundaryPage />}>
-        {validRoutes(APPLICATION_ROUTES)}
-        <Route path="*" element={<Navigate to={ROUTES_NAME.notFound} />} />
-      </Route>
-    )
-  );
-};
-
-const validRoutes = (routes: CustomRouteObject[]) => {
-  return routes.map((r, i) => (
-    <Route key={i} element={LayoutMap[r.layout as keyof typeof LayoutMap]()}>
-      {r.hide ? (
-        <Route path="*" element={<Navigate to={ROUTES_NAME.notFound} />} />
-      ) : (
-        <Route
-          path={r.path}
-          element={<Suspense fallback={""}>{r.element}</Suspense>}
-        />
-      )}
-    </Route>
-  ));
+  return routes;
 };

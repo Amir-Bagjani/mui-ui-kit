@@ -4,7 +4,7 @@ import axios, { AxiosError, AxiosRequestConfig } from "axios";
 //utils
 import { API } from "@/service/api";
 import { ROUTES_NAME } from "@/routes/routeNames";
-import { MAIN_SETTING } from "@/utils/mainSettings";
+import { MAIN_SETTING } from "@/app-setting/mainSettings";
 import { clearToken, getToken, storeToken } from "@/utils/token";
 
 const client = axios.create({

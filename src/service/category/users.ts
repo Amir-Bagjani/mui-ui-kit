@@ -2,7 +2,7 @@ import axios from "axios";
 
 //utils
 import { PREFIX_BASE_URL } from "../api";
-import { MAIN_SETTING } from "@/utils/mainSettings";
+import { MAIN_SETTING } from "@/app-setting/mainSettings";
 import { AxiosHandler } from "@/utils/axios/axiosHandler";
 
 //types

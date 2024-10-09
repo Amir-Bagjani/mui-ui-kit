@@ -5,39 +5,12 @@ export const baseAuth = baseRoute + "authentication";
 
 export const ROUTES_NAME = {
   home: baseRoute,
-  dashboard: baseRoute + "/dashboard",
-  notFound: baseRoute + "/not-found",
+  dashboard: baseRoute + "dashboard",
+  notFound: baseRoute + "not-found",
   authentication: {
     login: baseAuth + "/login",
     register: baseAuth + "/register",
   },
+  anyRoutes: "*",
 };
 
-
-// const dayRoutes= {
-
-// branch:[
-//   {path:'dashboard',element:<BranchDashboard/>,children:[{}]
-// ]
-
-
-
-// agent:[
-//   {path:'dashboard',element:<AgentDashboard/>,children:[{}]
-// ]
-// }
-
-
-// const hafezRoutes= {
-
-//   branch:[
-//     {path:'dashboard',element:<BranchDashboard/>,children:[{}]
-//   ]
-  
-  
-  
-//   agent:[
-//     {path:'dashboard',element:<AgentDashboard/>,children:[{}]
-//   ]
-//   }
-// useRoutes(routes[role])

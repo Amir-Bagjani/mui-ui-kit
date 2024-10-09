@@ -45,7 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     software: "rfap",
     platform: "portal",
     is_verified: true,
-    role: "receiptionict",
+    role: "adjuster",
     has_profile: true,
     expense_registration_is_allowed: true,
     complaint_registration_is_allowed: false,
@@ -59,7 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = useCallback((data: PostLoginResponse) => {
     setStatus(ROUTE_AUTH_STATUS.IDLE);
     storeToken(data.access_token, data.refresh_token);
-    setUser({ user_id: data.user_id, user_name: data.user_name });
+    setUser({ user_id: data.user_id, user_name: data.user_name,role:"adjuster" });
   }, []);
 
   const logout = useCallback(() => {
